@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"      
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title th:text="#{community.name}">community.name</title>
+    </head>
+    <body>
+        <div>
+        <p th:text="#{community.name}">community.name</p>
+        <p th:text="#{community.description}">community.description</p>
+        <a th:href="@{/menu}" th:text="#{enter}">enter</a>
+        </div>
+    </body>
+</html>
