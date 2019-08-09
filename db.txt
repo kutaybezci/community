@@ -1,0 +1,3 @@
+CREATE DATABASE community;
+CREATE USER community WITH ENCRYPTED PASSWORD 'community';
+GRANT ALL PRIVILEGES ON DATABASE community TO community;
