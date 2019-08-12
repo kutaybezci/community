@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title th:text="#{user.create}">user.create</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div>
+            <form th:action="@{/user/create}" th:object="${userForm}" method="post">
+                <p th:text="#{user.create}">user.create</p>
+                <input type="text" name="username" id="username" 
+                       th:placeholder="#{username}" th:field="*{username}" />
+                <br/>
+                <input type="password" name="password" id="password" placeholder="password"
+                       th:placeholder="#{password}" th:field="*{password}"/>
+                <br/>
+                <input type="password" name="password2" id="password2" placeholder="password.retype"
+                       th:placeholder="#{password.retype}" th:field="*{password2}"/>
+                <br/>
+                <input type="submit" value="save" th:value="#{save}" />
+            </form>
+        </div>
+    </body>
+</html>

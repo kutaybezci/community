@@ -3,14 +3,13 @@
       xmlns:th="http://www.thymeleaf.org"      
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
-        <title th:text="#{community.name}">community.name</title>
+        <title th:text="#{menu}">menu</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
         <div>
-            <p>MENU</p>
-            <p th:text="#{community.name}">community.name</p>
-            <p th:text="#{community.description}">community.description</p>
-            <a th:href="@{/menu}" th:text="#{enter}">enter</a>
+            <p th:text="#{menu}" >menu</p>
+            <a th:href="@{/user/create}" th:text="#{user.create}">user.create</a>
         </div>
     </body>
 </html>
