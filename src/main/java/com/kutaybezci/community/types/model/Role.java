@@ -14,28 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.kutaybezci.community.config;
+package com.kutaybezci.community.types.model;
 
-import com.kutaybezci.community.bl.MemberService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import lombok.Data;
 
 /**
  *
  * @author kutay.bezci
  */
-@Component
-@Slf4j
-public class CommandLineAppStartupRunner implements CommandLineRunner {
-    @Autowired
-    private MemberService memberService;
-    @Override
-    public void run(String...args) throws Exception {
-        if(memberService.initAdmin()){
-            log.info("Admin created");
-        }
-    }
-}
+@Entity
+@Data
+public class Role implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
+    @ManyToOne
+    private Member member;
+    
+    private String roleCode;
 
+}

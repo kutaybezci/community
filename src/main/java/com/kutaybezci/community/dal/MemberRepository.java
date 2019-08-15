@@ -14,28 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.kutaybezci.community.config;
+package com.kutaybezci.community.dal;
 
-import com.kutaybezci.community.bl.MemberService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.data.repository.CrudRepository;
+import com.kutaybezci.community.types.model.Member;
 
 /**
  *
  * @author kutay.bezci
  */
-@Component
-@Slf4j
-public class CommandLineAppStartupRunner implements CommandLineRunner {
-    @Autowired
-    private MemberService memberService;
-    @Override
-    public void run(String...args) throws Exception {
-        if(memberService.initAdmin()){
-            log.info("Admin created");
-        }
-    }
-}
+public interface MemberRepository extends CrudRepository<Member, Long> {
 
+    Member findByUsername(String username);
+    
+}
