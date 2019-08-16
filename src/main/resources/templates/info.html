@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2019 Kutay Bezci
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"      
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title th:text="#{info}">info</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div>         
+            <p th:if="${infoForm.error}" th:text="#{error}">error</p>
+            <p th:unless="${infoForm.error}" th:text="#{info}">info</p>    
+            <p th:text="${#messages.msg(infoForm.code)}">infoForm.code</p>
+            <p th:text="${infoForm.message}">infoForm.message</p>
+            <a th:href="@{/menu}" th:text="#{menu}">menu</a>
+        </div>
+    </body>
+</html>

@@ -40,5 +40,7 @@
     <logger name="org.thymeleaf">
         <level value="WARN"/>
     </logger>
-
+    <logger name="com.zaxxer.hikari">
+        <level value="WARN"/>
+    </logger>
 </configuration>

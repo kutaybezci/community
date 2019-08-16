@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 kutay.bezci
+ * Copyright (C) 2019 Kutay Bezci
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,21 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.kutaybezci.community.types.fe;
+package com.kutaybezci.community.types.bl;
 
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Data;
 
 /**
  *
- * @author kutay.bezci
+ * @author Kutay Bezci
  */
 @Data
-public class UserForm {
+public class CreateMemberRequest {
 
     private String username;
     private String password;
-    private String password2;
     private String fullname;
-    private String phone;
     private String email;
+    private String phone;
+    private Set<String> roles = new HashSet<>();
 }

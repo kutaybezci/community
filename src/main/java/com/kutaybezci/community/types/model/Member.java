@@ -17,8 +17,8 @@
 package com.kutaybezci.community.types.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +36,7 @@ import lombok.Data;
 @Data
 @Entity
 public class Member implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -43,8 +44,9 @@ public class Member implements Serializable {
     private String username;
     private String password;
     private String fullname;
+    @Column(unique = true)
     private String email;
     private String phone;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "member", orphanRemoval = true,fetch = FetchType.EAGER)
-    private List<Role> memberRoles=new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member", orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Role> memberRoles = new HashSet<>();
 }

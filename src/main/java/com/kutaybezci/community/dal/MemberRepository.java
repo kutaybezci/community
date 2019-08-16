@@ -16,8 +16,8 @@
  */
 package com.kutaybezci.community.dal;
 
-import org.springframework.data.repository.CrudRepository;
 import com.kutaybezci.community.types.model.Member;
+import org.springframework.data.repository.CrudRepository;
 
 /**
  *
@@ -26,5 +26,7 @@ import com.kutaybezci.community.types.model.Member;
 public interface MemberRepository extends CrudRepository<Member, Long> {
 
     Member findByUsername(String username);
-    
+
+    Member findByEmail(String email);
+
 }

@@ -16,13 +16,19 @@
  */
 package com.kutaybezci.community.controller;
 
+import com.kutaybezci.community.bl.MemberService;
+import com.kutaybezci.community.types.bl.CreateMemberRequest;
+import com.kutaybezci.community.types.fe.InfoForm;
+import com.kutaybezci.community.types.fe.UserForm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.kutaybezci.community.types.fe.UserForm;
+import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.util.StringUtils;
 
 /**
  *
@@ -31,14 +37,35 @@ import com.kutaybezci.community.types.fe.UserForm;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    @Autowired
+    private MemberService memberService;
+
     @GetMapping("/create")
-    public String getCreate(Model model){
-        model.addAttribute("userForm", new UserForm() );
+    public String getCreate(Model model) {
+        model.addAttribute("userForm", new UserForm());
         return "user";
     }
+
     @PostMapping("/create")
-    public String postCreate(@ModelAttribute UserForm userForm){
-        System.out.println(userForm.toString());
-        return "user";
+    public ModelAndView postCreate(@ModelAttribute UserForm userForm) {
+        if (!StringUtils.equals(userForm.getPassword(), userForm.getPassword2())) {
+            throw new RuntimeException("Password does not match");
+        }
+        CreateMemberRequest request = new CreateMemberRequest();
+        request.setEmail(userForm.getEmail());
+        request.setFullname(userForm.getFullname());
+        request.setPassword(userForm.getPassword());
+        request.setPhone(userForm.getPhone());
+        request.setUsername(userForm.getUsername());
+        memberService.createMember(request);
+        InfoForm infoForm = new InfoForm();
+        infoForm.setCode("OK");
+        infoForm.setMessage("user.create.ok");
+        infoForm.setError(false);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("infoForm", infoForm);
+        modelAndView.setViewName("info");
+        return modelAndView;
     }
 }

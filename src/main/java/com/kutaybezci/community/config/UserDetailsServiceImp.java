@@ -37,7 +37,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> member = memberService.findByUsername(username);
+        Optional<Member> member = memberService.findByLogin(username);
         if (member.isPresent()) {
             String[] roles = member.get().getMemberRoles().stream().map(y -> y.getRoleCode()).collect(Collectors.toList()).toArray(new String[0]);
             return User.withUsername(member.get().getUsername()).password(member.get().getPassword()).roles(roles).build();
