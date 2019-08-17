@@ -24,6 +24,7 @@
                     <td th:text="${member.fullname}">member.username</td>
                     <td th:text="${member.email}">member.username</td>
                     <td th:text="${member.phone}">member.username</td>
+                    <td> <a th:href="@{'/user/update/'+${member.id}}" th:text="#{update}">update</a></td>
                 </tr>
             </tbody>
         </table>    

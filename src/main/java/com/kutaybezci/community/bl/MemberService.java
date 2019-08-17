@@ -19,9 +19,13 @@ package com.kutaybezci.community.bl;
 import com.kutaybezci.community.dal.MemberRepository;
 import com.kutaybezci.community.types.bl.CreateMemberRequest;
 import com.kutaybezci.community.types.bl.CreateMemberResponse;
+import com.kutaybezci.community.types.bl.DisplayMemberRequest;
+import com.kutaybezci.community.types.bl.DisplayMemberResponse;
 import com.kutaybezci.community.types.bl.ListMemberRequest;
 import com.kutaybezci.community.types.bl.ListMemberResponse;
 import com.kutaybezci.community.types.bl.MemberListItem;
+import com.kutaybezci.community.types.bl.UpdateMemberRequest;
+import com.kutaybezci.community.types.bl.UpdateMemberResponse;
 import com.kutaybezci.community.types.model.Member;
 import com.kutaybezci.community.types.model.Role;
 import java.util.ArrayList;
@@ -29,7 +33,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -47,26 +50,22 @@ public class MemberService {
     private MemberRepository memberRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private static final String EMAIL_AT = "@";
 
     @Transactional
     public Optional<Member> findByLogin(String loginName) {
         Member member;
-        if (StringUtils.contains(loginName, "@")) {
-            member = memberRepository.findByEmail(loginName);
+        if (StringUtils.contains(loginName, EMAIL_AT)) {
+            return memberRepository.findByEmail(loginName);
         } else {
-            member = memberRepository.findByUsername(loginName);
-        }
-        if (member == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(member);
+            return memberRepository.findByUsername(loginName);
         }
     }
 
     public boolean initAdmin() {
         try {
             if (memberRepository.count() == 0) {
-                val admin = "ADMIN";
+                String admin = "ADMIN";
                 CreateMemberRequest request = new CreateMemberRequest();
                 request.setFullname(admin);
                 request.setPassword(admin);
@@ -87,21 +86,20 @@ public class MemberService {
         if (StringUtils.isAllBlank(request.getUsername())) {
             throw new RuntimeException("Username cannot be empty");
         }
-        String emailAt = "@";
-        if (StringUtils.containsAny(request.getUsername(), emailAt)) {
-            throw new RuntimeException(String.format("Username cannot contain:%s", emailAt));
+        if (StringUtils.containsAny(request.getUsername(), EMAIL_AT)) {
+            throw new RuntimeException(String.format("Username cannot contain:%s", EMAIL_AT));
         }
         if (StringUtils.isNotBlank(request.getEmail())) {
-            if (StringUtils.containsNone(request.getEmail(), emailAt)) {
+            if (StringUtils.containsNone(request.getEmail(), EMAIL_AT)) {
                 throw new RuntimeException("Email is not valid");
             }
-            Member m = memberRepository.findByEmail(request.getEmail());
-            if (m != null) {
+            Optional<Member> m = memberRepository.findByEmail(request.getEmail());
+            if (m.isPresent()) {
                 throw new RuntimeException("Username is already taken");
             }
         }
-        Member m = memberRepository.findByUsername(request.getUsername());
-        if (m != null) {
+        Optional<Member> m = memberRepository.findByUsername(request.getUsername());
+        if (m.isPresent()) {
             throw new RuntimeException("Username already exists");
         }
         Member member = new Member();
@@ -141,5 +139,77 @@ public class MemberService {
             response.getMemberList().add(mi);
         }
         return response;
+    }
+
+    @Transactional
+    public DisplayMemberResponse displayMember(DisplayMemberRequest request) {
+        long id = -1;
+        try {
+            id = Long.valueOf(request.getMemberId());
+        } catch (NumberFormatException ex) {
+            log.info("Wrong format for member id", ex);
+        }
+        Optional<Member> member = memberRepository.findById(id);
+        if (!member.isPresent()) {
+            throw new RuntimeException("Member does not exists");
+        }
+        Member m = member.get();
+        DisplayMemberResponse response = new DisplayMemberResponse();
+        response.setEmail(m.getEmail());
+        response.setFullname(m.getFullname());
+        response.setMemberId(m.getId().toString());
+        response.setPhone(m.getPhone());
+        response.setUsername(m.getUsername());
+        return response;
+    }
+
+    @Transactional
+    public UpdateMemberResponse updateMember(UpdateMemberRequest request) {
+        long id = -1;
+        try {
+            id = Long.valueOf(request.getMemberId());
+        } catch (NumberFormatException ex) {
+            log.info("Wrong format for member id", ex);
+        }
+        if (StringUtils.contains(request.getUsername(), EMAIL_AT)) {
+            throw new RuntimeException(String.format("Username cannot contain:%s", EMAIL_AT));
+        }
+        if (StringUtils.isNotBlank(request.getEmail())) {
+            if (StringUtils.containsNone(request.getEmail(), EMAIL_AT)) {
+                throw new RuntimeException("Email is not valid");
+            }
+        }
+        Optional<Member> member = memberRepository.findById(id);
+        if (!member.isPresent()) {
+            throw new RuntimeException("Member does not exists");
+        } else {
+            Member m = member.get();
+            if (!StringUtils.equals(request.getUsername(), m.getUsername())) {
+                Optional<Member> other = memberRepository.findByUsername(request.getUsername());
+                if (other.isPresent()) {
+                    throw new RuntimeException("Username is already taken");
+                }
+                m.setUsername(request.getUsername());
+            }
+            if (!StringUtils.isBlank(request.getEmail())
+                    && !StringUtils.equals(request.getEmail(), m.getEmail())) {
+                Optional<Member> other = memberRepository.findByEmail(request.getEmail());
+                if (other.isPresent()) {
+                    throw new RuntimeException("email is already recorded");
+                }
+            }
+            m.setEmail(request.getEmail());
+            m.setFullname(request.getFullname());
+            m.setPhone(request.getPhone());
+            if (request.isUpdatePassword()) {
+                if (!StringUtils.isBlank(request.getPassword())) {
+                    m.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+                } else {
+                    m.setPassword(null);
+                }
+            }
+            memberRepository.save(m);
+            return new UpdateMemberResponse();
+        }
     }
 }

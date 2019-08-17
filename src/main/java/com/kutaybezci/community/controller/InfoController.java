@@ -39,7 +39,9 @@ public class InfoController implements ErrorController {
         log.error("Error controller catches exception", exception);
         InfoForm infoForm = new InfoForm();
         infoForm.setCode("error");
-        infoForm.setMessage(exception.getMessage());
+        if (exception != null) {
+            infoForm.setMessage(exception.getMessage());
+        }
         infoForm.setError(true);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("infoForm", infoForm);
