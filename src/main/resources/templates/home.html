@@ -4,13 +4,13 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
         <title th:text="#{community.name}">community.name</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/>
     </head>
-    <body>
-        <div>
-        <p th:text="#{community.name}">community.name</p>
-        <p th:text="#{community.description}">community.description</p>
-        <a th:href="@{/menu}" th:text="#{enter}">enter</a>
+    <body class="w3-container w3-pale-blue">
+        <div class="w3-card-4">
+            <div class="w3-container w3-blue"><h1 th:text="#{community.name}">community.name</h1></div>
+            <div class="w3-container w3-white"><span th:utext="#{community.description}">community.description</span></div>
+            <div class="w3-container w3-blue"><a class="w3-button w3-green w3-hover-red" th:href="@{/menu}" th:text="#{enter}">enter</a></div>
         </div>
     </body>
 </html>

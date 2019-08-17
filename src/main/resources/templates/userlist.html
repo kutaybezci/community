@@ -4,30 +4,34 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
         <title th:text="#{user.list}">user.list</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/>
     </head>
-    <body>
-        <table>
-            <thead
-                <tr>
-                    <th th:text="#{id}">id</th>
-                    <th th:text="#{username}">username</th>
-                    <th th:text="#{fullname}">fullname</th>
-                    <th th:text="#{email}">email</th>
-                    <th th:text="#{phone}">phone</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="member : ${memberList}">
-                    <td th:text="${member.id}">member.username</td>
-                    <td th:text="${member.username}">member.username</td>
-                    <td th:text="${member.fullname}">member.username</td>
-                    <td th:text="${member.email}">member.username</td>
-                    <td th:text="${member.phone}">member.username</td>
-                    <td> <a th:href="@{'/user/update/'+${member.id}}" th:text="#{update}">update</a></td>
-                </tr>
-            </tbody>
-        </table>    
-         <a th:href="@{/menu}" th:text="#{menu}">menu</a>
+    <body class="w3-container w3-pale-blue">
+        <div class="w3-card-4">
+            <div class="w3-container w3-blue"><h1 th:text="#{user.list}" >user.list</h1></div>
+                <table class="w3-table-all w3-hoverable">
+                    <thead>
+                    <tr class="w3-gray">
+                        <th th:text="#{id}">id</th>
+                        <th th:text="#{username}">username</th>
+                        <th th:text="#{fullname}">fullname</th>
+                        <th th:text="#{email}">email</th>
+                        <th th:text="#{phone}">phone</th>
+                        <th th:text="#{update}">update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="member : ${memberList}">
+                        <td th:text="${member.id}">member.username</td>
+                        <td th:text="${member.username}">member.username</td>
+                        <td th:text="${member.fullname}">member.username</td>
+                        <td th:text="${member.email}">member.username</td>
+                        <td th:text="${member.phone}">member.username</td>
+                        <td> <a class="w3-button w3-green w3-hover-red" th:href="@{'/user/update/'+${member.id}}" th:text="#{update}">update</a></td>
+                    </tr>
+                </tbody>
+            </table>    
+         <div class="w3-container w3-blue"><a class="w3-button w3-green w3-hover-red" th:href="@{/menu}" th:text="#{menu}">menu</a></div>
+         </div>
     </body>
 </html>
