@@ -19,8 +19,12 @@ package com.kutaybezci.community.bl;
 import com.kutaybezci.community.dal.MemberRepository;
 import com.kutaybezci.community.types.bl.CreateMemberRequest;
 import com.kutaybezci.community.types.bl.CreateMemberResponse;
+import com.kutaybezci.community.types.bl.ListMemberRequest;
+import com.kutaybezci.community.types.bl.ListMemberResponse;
+import com.kutaybezci.community.types.bl.MemberListItem;
 import com.kutaybezci.community.types.model.Member;
 import com.kutaybezci.community.types.model.Role;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -119,6 +123,23 @@ public class MemberService {
         memberRepository.save(member);
         CreateMemberResponse response = new CreateMemberResponse();
         response.setMemberId(member.getId().toString());
+        return response;
+    }
+
+    @Transactional
+    public ListMemberResponse listMember(ListMemberRequest request) {
+        Iterable<Member> members = memberRepository.findAll();
+        ListMemberResponse response = new ListMemberResponse();
+        response.setMemberList(new ArrayList<>());
+        for (Member m : members) {
+            MemberListItem mi = new MemberListItem();
+            mi.setEmail(m.getEmail());
+            mi.setFullname(m.getFullname());
+            mi.setId(m.getId().toString());
+            mi.setPhone(m.getPhone());
+            mi.setUsername(m.getUsername());
+            response.getMemberList().add(mi);
+        }
         return response;
     }
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title th:text="#{user.list}">user.list</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <table>
+            <thead
+                <tr>
+                    <th th:text="#{id}">id</th>
+                    <th th:text="#{username}">username</th>
+                    <th th:text="#{fullname}">fullname</th>
+                    <th th:text="#{email}">email</th>
+                    <th th:text="#{phone}">phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="member : ${memberList}">
+                    <td th:text="${member.id}">member.username</td>
+                    <td th:text="${member.username}">member.username</td>
+                    <td th:text="${member.fullname}">member.username</td>
+                    <td th:text="${member.email}">member.username</td>
+                    <td th:text="${member.phone}">member.username</td>
+                </tr>
+            </tbody>
+        </table>    
+         <a th:href="@{/menu}" th:text="#{menu}">menu</a>
+    </body>
+</html>

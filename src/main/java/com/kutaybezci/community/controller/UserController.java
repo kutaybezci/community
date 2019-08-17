@@ -18,6 +18,8 @@ package com.kutaybezci.community.controller;
 
 import com.kutaybezci.community.bl.MemberService;
 import com.kutaybezci.community.types.bl.CreateMemberRequest;
+import com.kutaybezci.community.types.bl.ListMemberRequest;
+import com.kutaybezci.community.types.bl.ListMemberResponse;
 import com.kutaybezci.community.types.fe.InfoForm;
 import com.kutaybezci.community.types.fe.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,13 @@ public class UserController {
         return "user";
     }
 
+    @GetMapping("/list")
+    public String list(Model model) {
+        ListMemberResponse response = memberService.listMember(new ListMemberRequest());
+        model.addAttribute("memberList", response.getMemberList());
+        return "userlist";
+    }
+
     @PostMapping("/create")
     public ModelAndView postCreate(@ModelAttribute UserForm userForm) {
         if (!StringUtils.equals(userForm.getPassword(), userForm.getPassword2())) {
@@ -68,4 +77,5 @@ public class UserController {
         modelAndView.setViewName("info");
         return modelAndView;
     }
+
 }
