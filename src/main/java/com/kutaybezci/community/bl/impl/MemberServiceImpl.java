@@ -100,13 +100,14 @@ public class MemberServiceImpl implements MemberService {
     public boolean initAdmin() {
         try {
             if (memberRepository.count() == 0) {
-                final String[] users = new String[]{"SYSTEM", "ADMIN"};
+                final String[] users = new String[]{"ADMIN"/*, "SYSTEM"*/};
                 for (String user : users) {
                     Member m = new Member();
+                    m.setId(1L);
                     m.setFullname(user);
                     m.setUsername(user);
-                    if (StringUtils.equals(users[1], user)) {
-                        m.setPassword(bCryptPasswordEncoder.encode(users[1]));
+                    if (StringUtils.equals(users[0], user)) {
+                        m.setPassword(bCryptPasswordEncoder.encode(users[0]));
                     }
                     memberRepository.save(m);
                 }

@@ -26,6 +26,10 @@
                        th:placeholder="#{email}" th:field="*{email}" />
                 <input class="w3-input" type="text" name="phone" id="phone" placeholder="phone"
                        th:placeholder="#{phone}" th:field="*{phone}" />
+                <!--<div class="w3-container w3-white">
+                    <label th:text="#{birthdate}">birthdate</label>
+                    <input type="date" name="birthdate" id="birthdate"/>
+                </div>-->
                 <div class="w3-container w3-blue">
                     <input class="w3-button w3-green w3-hover-red" type="submit" value="save" th:value="#{save}" />
                     <a class="w3-button w3-green w3-hover-red" th:href="@{/menu}" th:text="#{menu}">menu</a>
