@@ -16,200 +16,32 @@
  */
 package com.kutaybezci.community.bl;
 
-import com.kutaybezci.community.dal.MemberRepository;
 import com.kutaybezci.community.types.bl.CreateMemberRequest;
 import com.kutaybezci.community.types.bl.CreateMemberResponse;
 import com.kutaybezci.community.types.bl.DisplayMemberRequest;
 import com.kutaybezci.community.types.bl.DisplayMemberResponse;
 import com.kutaybezci.community.types.bl.ListMemberRequest;
 import com.kutaybezci.community.types.bl.ListMemberResponse;
-import com.kutaybezci.community.types.bl.MemberListItem;
 import com.kutaybezci.community.types.bl.UpdateMemberRequest;
 import com.kutaybezci.community.types.bl.UpdateMemberResponse;
 import com.kutaybezci.community.types.model.Member;
-import com.kutaybezci.community.types.model.Role;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Optional;
-import javax.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
 
 /**
  *
  * @author kutay.bezci
  */
-@Service
-@Slf4j
-public class MemberService {
+public interface MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private static final String EMAIL_AT = "@";
+    public Optional<Member> doFindByLogin(String loginName);
 
-    @Transactional
-    public Optional<Member> findByLogin(String loginName) {
-        Member member;
-        if (StringUtils.contains(loginName, EMAIL_AT)) {
-            return memberRepository.findByEmail(loginName);
-        } else {
-            return memberRepository.findByUsername(loginName);
-        }
-    }
+    public boolean doInitAdmin();
 
-    public boolean initAdmin() {
-        try {
-            if (memberRepository.count() == 0) {
-                String admin = "ADMIN";
-                CreateMemberRequest request = new CreateMemberRequest();
-                request.setFullname(admin);
-                request.setPassword(admin);
-                request.setUsername(admin);
-                request.setRoles(new HashSet<>());
-                request.getRoles().add(admin);
-                createMember(request);
-                return true;
-            }
-        } catch (Exception ex) {
-            log.error("Error on creating admin", ex);
-        }
-        return false;
-    }
+    public CreateMemberResponse doCreateMember(CreateMemberRequest request);
 
-    @Transactional
-    public CreateMemberResponse createMember(CreateMemberRequest request) {
-        if (StringUtils.isAllBlank(request.getUsername())) {
-            throw new RuntimeException("username.not.empty");
-        }
-        if (StringUtils.containsAny(request.getUsername(), EMAIL_AT)) {
-            throw new RuntimeException("username.not.valid");
-        }
-        if (StringUtils.isNotBlank(request.getEmail())) {
-            if (StringUtils.containsNone(request.getEmail(), EMAIL_AT)) {
-                throw new RuntimeException("email.not.valid");
-            }
-            Optional<Member> m = memberRepository.findByEmail(request.getEmail());
-            if (m.isPresent()) {
-                throw new RuntimeException("email.in.use");
-            }
-        }
-        Optional<Member> m = memberRepository.findByUsername(request.getUsername());
-        if (m.isPresent()) {
-            throw new RuntimeException("username.in.use");
-        }
-        Member member = new Member();
-        member.setUsername(request.getUsername());
-        member.setEmail(request.getEmail());
-        member.setFullname(request.getFullname());
-        if (StringUtils.isNotBlank(request.getPassword())) {
-            member.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
-        }
-        member.setPhone(request.getPhone());
-        member.setMemberRoles(new HashSet<>());
-        request.getRoles().stream().map((role) -> {
-            Role r = new Role();
-            r.setRoleCode(role);
-            return r;
-        }).forEach((r) -> {
-            member.getMemberRoles().add(r);
-        });
-        memberRepository.save(member);
-        CreateMemberResponse response = new CreateMemberResponse();
-        response.setMemberId(member.getId().toString());
-        return response;
-    }
+    public ListMemberResponse doListMember(ListMemberRequest request);
 
-    @Transactional
-    public ListMemberResponse listMember(ListMemberRequest request) {
-        Iterable<Member> members = memberRepository.findAll();
-        ListMemberResponse response = new ListMemberResponse();
-        response.setMemberList(new ArrayList<>());
-        for (Member m : members) {
-            MemberListItem mi = new MemberListItem();
-            mi.setEmail(m.getEmail());
-            mi.setFullname(m.getFullname());
-            mi.setId(m.getId().toString());
-            mi.setPhone(m.getPhone());
-            mi.setUsername(m.getUsername());
-            response.getMemberList().add(mi);
-        }
-        return response;
-    }
+    public DisplayMemberResponse doDisplayMember(DisplayMemberRequest request);
 
-    @Transactional
-    public DisplayMemberResponse displayMember(DisplayMemberRequest request) {
-        long id = -1;
-        try {
-            id = Long.valueOf(request.getMemberId());
-        } catch (NumberFormatException ex) {
-            log.info("Wrong format for member id", ex);
-        }
-        Optional<Member> member = memberRepository.findById(id);
-        if (!member.isPresent()) {
-            throw new RuntimeException("member.not.found");
-        }
-        Member m = member.get();
-        DisplayMemberResponse response = new DisplayMemberResponse();
-        response.setEmail(m.getEmail());
-        response.setFullname(m.getFullname());
-        response.setMemberId(m.getId().toString());
-        response.setPhone(m.getPhone());
-        response.setUsername(m.getUsername());
-        return response;
-    }
-
-    @Transactional
-    public UpdateMemberResponse updateMember(UpdateMemberRequest request) {
-        long id = -1;
-        try {
-            id = Long.valueOf(request.getMemberId());
-        } catch (NumberFormatException ex) {
-            log.info("Wrong format for member id", ex);
-        }
-        if (StringUtils.contains(request.getUsername(), EMAIL_AT)) {
-            throw new RuntimeException("username.not.valid");
-        }
-        if (StringUtils.isNotBlank(request.getEmail())) {
-            if (StringUtils.containsNone(request.getEmail(), EMAIL_AT)) {
-                throw new RuntimeException("email.not.valid");
-            }
-        }
-        Optional<Member> member = memberRepository.findById(id);
-        if (!member.isPresent()) {
-            throw new RuntimeException("member.not.found");
-        } else {
-            Member m = member.get();
-            if (!StringUtils.equals(request.getUsername(), m.getUsername())) {
-                Optional<Member> other = memberRepository.findByUsername(request.getUsername());
-                if (other.isPresent()) {
-                    throw new RuntimeException("username.in.use");
-                }
-                m.setUsername(request.getUsername());
-            }
-            if (!StringUtils.isBlank(request.getEmail())
-                    && !StringUtils.equals(request.getEmail(), m.getEmail())) {
-                Optional<Member> other = memberRepository.findByEmail(request.getEmail());
-                if (other.isPresent()) {
-                    throw new RuntimeException("email.in.use");
-                }
-            }
-            m.setEmail(request.getEmail());
-            m.setFullname(request.getFullname());
-            m.setPhone(request.getPhone());
-            if (request.isUpdatePassword()) {
-                if (!StringUtils.isBlank(request.getPassword())) {
-                    m.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
-                } else {
-                    m.setPassword(null);
-                }
-            }
-            memberRepository.save(m);
-            return new UpdateMemberResponse();
-        }
-    }
+    public UpdateMemberResponse doUpdateMember(UpdateMemberRequest request);
 }

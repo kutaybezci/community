@@ -33,7 +33,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     private MemberService memberService;
     @Override
     public void run(String...args) throws Exception {
-        if(memberService.initAdmin()){
+        if(memberService.doInitAdmin()){
             log.info("Admin created");
         }
     }

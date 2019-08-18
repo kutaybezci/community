@@ -57,7 +57,7 @@ public class UserController {
     public String getCreate(@PathVariable String id, Model model) {
         DisplayMemberRequest request = new DisplayMemberRequest();
         request.setMemberId(id);
-        DisplayMemberResponse response = memberService.displayMember(request);
+        DisplayMemberResponse response = memberService.doDisplayMember(request);
         UserForm userForm = new UserForm();
         userForm.setEmail(response.getEmail());
         userForm.setFullname(response.getFullname());
@@ -83,7 +83,7 @@ public class UserController {
         request.setFullname(userForm.getFullname());
         request.setPhone(userForm.getPhone());
         request.setUsername(userForm.getUsername());
-        memberService.updateMember(request);
+        memberService.doUpdateMember(request);
         InfoForm infoForm = new InfoForm();
         infoForm.setCode("OK");
         infoForm.setMessage("user.update.ok");
@@ -96,7 +96,7 @@ public class UserController {
 
     @GetMapping("/list")
     public String list(Model model) {
-        ListMemberResponse response = memberService.listMember(new ListMemberRequest());
+        ListMemberResponse response = memberService.doListMember(new ListMemberRequest());
         model.addAttribute("memberList", response.getMemberList());
         return "userlist";
     }
@@ -112,7 +112,7 @@ public class UserController {
         request.setPassword(userForm.getPassword());
         request.setPhone(userForm.getPhone());
         request.setUsername(userForm.getUsername());
-        memberService.createMember(request);
+        memberService.doCreateMember(request);
         InfoForm infoForm = new InfoForm();
         infoForm.setCode("OK");
         infoForm.setMessage("user.create.ok");
