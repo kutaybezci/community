@@ -73,7 +73,7 @@ public class UserController {
         UpdateMemberRequest request = new UpdateMemberRequest();
         if (userForm.isUpdatePassword()) {
             if (!StringUtils.equals(userForm.getPassword(), userForm.getPassword2())) {
-                throw new RuntimeException("Password does not match");
+                throw new RuntimeException("password.not.match");
             }
             request.setPassword(userForm.getPassword());
             request.setUpdatePassword(true);
@@ -104,7 +104,7 @@ public class UserController {
     @PostMapping("/create")
     public ModelAndView postCreate(@ModelAttribute UserForm userForm) {
         if (!StringUtils.equals(userForm.getPassword(), userForm.getPassword2())) {
-            throw new RuntimeException("Password does not match");
+            throw new RuntimeException("password.not.match");
         }
         CreateMemberRequest request = new CreateMemberRequest();
         request.setEmail(userForm.getEmail());

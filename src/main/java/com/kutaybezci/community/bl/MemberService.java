@@ -84,23 +84,23 @@ public class MemberService {
     @Transactional
     public CreateMemberResponse createMember(CreateMemberRequest request) {
         if (StringUtils.isAllBlank(request.getUsername())) {
-            throw new RuntimeException("Username cannot be empty");
+            throw new RuntimeException("username.not.empty");
         }
         if (StringUtils.containsAny(request.getUsername(), EMAIL_AT)) {
-            throw new RuntimeException(String.format("Username cannot contain:%s", EMAIL_AT));
+            throw new RuntimeException("username.not.valid");
         }
         if (StringUtils.isNotBlank(request.getEmail())) {
             if (StringUtils.containsNone(request.getEmail(), EMAIL_AT)) {
-                throw new RuntimeException("Email is not valid");
+                throw new RuntimeException("email.not.valid");
             }
             Optional<Member> m = memberRepository.findByEmail(request.getEmail());
             if (m.isPresent()) {
-                throw new RuntimeException("Username is already taken");
+                throw new RuntimeException("email.in.use");
             }
         }
         Optional<Member> m = memberRepository.findByUsername(request.getUsername());
         if (m.isPresent()) {
-            throw new RuntimeException("Username already exists");
+            throw new RuntimeException("username.in.use");
         }
         Member member = new Member();
         member.setUsername(request.getUsername());
@@ -151,7 +151,7 @@ public class MemberService {
         }
         Optional<Member> member = memberRepository.findById(id);
         if (!member.isPresent()) {
-            throw new RuntimeException("Member does not exists");
+            throw new RuntimeException("member.not.found");
         }
         Member m = member.get();
         DisplayMemberResponse response = new DisplayMemberResponse();
@@ -172,22 +172,22 @@ public class MemberService {
             log.info("Wrong format for member id", ex);
         }
         if (StringUtils.contains(request.getUsername(), EMAIL_AT)) {
-            throw new RuntimeException(String.format("Username cannot contain:%s", EMAIL_AT));
+            throw new RuntimeException("username.not.valid");
         }
         if (StringUtils.isNotBlank(request.getEmail())) {
             if (StringUtils.containsNone(request.getEmail(), EMAIL_AT)) {
-                throw new RuntimeException("Email is not valid");
+                throw new RuntimeException("email.not.valid");
             }
         }
         Optional<Member> member = memberRepository.findById(id);
         if (!member.isPresent()) {
-            throw new RuntimeException("Member does not exists");
+            throw new RuntimeException("member.not.found");
         } else {
             Member m = member.get();
             if (!StringUtils.equals(request.getUsername(), m.getUsername())) {
                 Optional<Member> other = memberRepository.findByUsername(request.getUsername());
                 if (other.isPresent()) {
-                    throw new RuntimeException("Username is already taken");
+                    throw new RuntimeException("username.in.use");
                 }
                 m.setUsername(request.getUsername());
             }
@@ -195,7 +195,7 @@ public class MemberService {
                     && !StringUtils.equals(request.getEmail(), m.getEmail())) {
                 Optional<Member> other = memberRepository.findByEmail(request.getEmail());
                 if (other.isPresent()) {
-                    throw new RuntimeException("email is already recorded");
+                    throw new RuntimeException("email.in.use");
                 }
             }
             m.setEmail(request.getEmail());
