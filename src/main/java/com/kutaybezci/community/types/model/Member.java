@@ -44,7 +44,6 @@ public class Member implements Serializable {
     private String username;
     private String password;
     private String fullname;
-    @Column(unique = true)
     private String email;
     private String phone;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "member", orphanRemoval = true, fetch = FetchType.EAGER)

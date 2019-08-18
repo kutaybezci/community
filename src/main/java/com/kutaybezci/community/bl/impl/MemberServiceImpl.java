@@ -90,20 +90,19 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public Optional<Member> findByLogin(String loginName) {
-        if (StringUtils.contains(loginName, EMAIL_AT)) {
+        /*if (StringUtils.contains(loginName, EMAIL_AT)) {
             return memberRepository.findByEmail(loginName);
-        } else {
-            return memberRepository.findByUsername(loginName);
-        }
+        } else {*/
+        return memberRepository.findByUsername(loginName);
+        //}
     }
 
     public boolean initAdmin() {
         try {
             if (memberRepository.count() == 0) {
-                final String[] users = new String[]{"ADMIN"/*, "SYSTEM"*/};
+                final String[] users = new String[]{"ADMIN", "SYSTEM"};
                 for (String user : users) {
                     Member m = new Member();
-                    m.setId(1L);
                     m.setFullname(user);
                     m.setUsername(user);
                     if (StringUtils.equals(users[0], user)) {
