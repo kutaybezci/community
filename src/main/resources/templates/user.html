@@ -5,36 +5,49 @@
     <head>
         <title th:text="#{user.create}">user.create</title>
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     </head>
     <body class="w3-container w3-pale-blue">
         <div class="w3-card-4">
-            <form th:action="@{'/user/'+${userForm.postTo}}" th:object="${userForm}" method="post">
-                <div class="w3-container w3-blue"><h1 th:text="#{user.create}">user.create</h1></div>
-                <input class="w3-input" type="text" name="username" id="username" 
-                       th:placeholder="#{username}" th:field="*{username}" />
-                <div class="w3-container w3-white" th:if="*{postTo!='create'}">
-                    <input class="w3-check" type="checkbox" name="updatePassword" th:checked="*{updatePassword}"/>
-                    <label th:text="#{is.update.password}">is.update.password</label>
+            <div class="w3-container w3-blue w3-center">
+                <i class="w3-xxxlarge fa fa-user-circle-o"></i>
+                <h1 class="w3-center w3-show-inline-block" th:text="#{user}">user</h1>
+            </div>
+            <div class="w3-container w3-white">
+                <div class="w3-margin">
+                    <form  th:action="@{'/user/'+${userForm.postTo}}" th:object="${userForm}" method="post">
+                        <fieldset>
+                            <input class="w3-input" type="text" name="username" id="username" 
+                                   th:placeholder="#{username}" th:field="*{username}" />
+                            <div class="w3-container w3-white" th:if="*{postTo!='create'}">
+                                <input class="w3-check" type="checkbox" name="updatePassword" th:checked="*{updatePassword}"/>
+                                <label th:text="#{is.update.password}">is.update.password</label>
+                            </div>
+                            <input class="w3-input" type="password" name="password" id="password" placeholder="password"
+                                   th:placeholder="#{password}" th:field="*{password}"/>
+                            <input class="w3-input" type="password" name="password2" id="password2" placeholder="password.retype"
+                                   th:placeholder="#{password.retype}" th:field="*{password2}"/>
+                            <input class="w3-input" type="text" name="fullname" id="fullname" placeholder="fullname"
+                                   th:placeholder="#{fullname}" th:field="*{fullname}" />
+                            <input class="w3-input" type="text" name="email" id="email" placeholder="email"
+                                   th:placeholder="#{email}" th:field="*{email}" />
+                            <input class="w3-input" type="text" name="phone" id="phone" placeholder="phone"
+                                   th:placeholder="#{phone}" th:field="*{phone}" />
+                            <!--<div class="w3-container w3-white">
+                                <label th:text="#{birthdate}">birthdate</label>
+                                <input type="date" name="birthdate" id="birthdate"/>
+                            </div>-->
+                            <button class="w3-button w3-green w3-hover-red w3-margin-top" type="submit" value="save">
+                                <i class="fa fa-save w3-large"></i>
+                                <span class="w3-show-inline-block" th:text="#{save}">save</span>
+                            </button>
+                        </fieldset>
+                    </form>
                 </div>
-                <input class="w3-input" type="password" name="password" id="password" placeholder="password"
-                       th:placeholder="#{password}" th:field="*{password}"/>
-                <input class="w3-input" type="password" name="password2" id="password2" placeholder="password.retype"
-                       th:placeholder="#{password.retype}" th:field="*{password2}"/>
-                <input class="w3-input" type="text" name="fullname" id="fullname" placeholder="fullname"
-                       th:placeholder="#{fullname}" th:field="*{fullname}" />
-                <input class="w3-input" type="text" name="email" id="email" placeholder="email"
-                       th:placeholder="#{email}" th:field="*{email}" />
-                <input class="w3-input" type="text" name="phone" id="phone" placeholder="phone"
-                       th:placeholder="#{phone}" th:field="*{phone}" />
-                <!--<div class="w3-container w3-white">
-                    <label th:text="#{birthdate}">birthdate</label>
-                    <input type="date" name="birthdate" id="birthdate"/>
-                </div>-->
-                <div class="w3-container w3-blue">
-                    <input class="w3-button w3-green w3-hover-red" type="submit" value="save" th:value="#{save}" />
-                    <a class="w3-button w3-green w3-hover-red" th:href="@{/menu}" th:text="#{menu}">menu</a>
-                </div>
-            </form>
+            </div>
+            <div class="w3-container w3-blue">
+                <a class="w3-button w3-green w3-hover-red" th:href="@{/menu}" th:text="#{menu}">menu</a>          
+            </div>
         </div>
     </body>
 </html>

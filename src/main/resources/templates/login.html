@@ -5,15 +5,24 @@
     <head>
         <title th:text="#{login}">login</title>
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     </head>
     <body class="w3-container w3-pale-blue">
         <div class="w3-card-4">
             <form th:action="@{/login}" method="post">
-                <div class="w3-container w3-blue"><h1 th:text="#{login}">login</h1></div>
-                <input class="w3-input" type="text" name="username" id="username" 
-                       th:placeholder="#{username}"  />
-                <input class="w3-input" type="password" name="password" id="password" placeholder="password"
-                       th:placeholder="#{password}" />
+                <div class="w3-container w3-blue w3-center"><h1 th:text="#{login}">login</h1></div>
+                <div class="w3-container w3-white">
+                    <div class="w3-margin">
+                        <div class="w3-row">
+                            <div class="w3-col" style="width:50px"><i class="fa fa-user w3-xxlarge"></i></div>
+                            <div class="w3-rest"><input class=" w3-input" type="text" name="username" id="username" th:placeholder="#{username}"/></div>
+                        </div>
+                        <div class="w3-row">
+                            <div class="w3-col" style="width:50px"><i class="fa fa-lock w3-xxlarge"></i></div>
+                            <div class="w3-rest"><input class="w3-input w3-bar-item" type="password" name="password" id="password"  th:placeholder="#{password}"/></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="w3-container w3-blue"><input class="w3-button w3-green w3-hover-red" type="submit" value="login" th:value="#{login}" /></div>
             </form>
         </div>

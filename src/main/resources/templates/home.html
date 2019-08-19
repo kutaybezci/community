@@ -5,11 +5,18 @@
     <head>
         <title th:text="#{community.name}">community.name</title>
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     </head>
     <body class="w3-container w3-pale-blue">
+        
         <div class="w3-card-4">
-            <div class="w3-container w3-blue"><h1 th:text="#{community.name}">community.name</h1></div>
-            <div class="w3-container w3-white"><span th:utext="#{community.description}">community.description</span></div>
+            <div class="w3-container w3-blue w3-center">
+                <i class="w3-xxxlarge fa fa-home "></i>
+                <h1 class="w3-center w3-show-inline-block" th:text="#{community.name}">community.name</h1>
+            </div>
+            <div class="w3-container w3-white">
+                <p class="w3-margin" th:utext="#{community.description}">community.description</p>
+             </div>
             <div class="w3-container w3-blue"><a class="w3-button w3-green w3-hover-red" th:href="@{/menu}" th:text="#{enter}">enter</a></div>
         </div>
     </body>
