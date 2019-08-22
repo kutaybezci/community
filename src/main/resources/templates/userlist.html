@@ -20,17 +20,22 @@
                             <th th:text="#{fullname}">fullname</th>
                             <th th:text="#{email}">email</th>
                             <th th:text="#{phone}">phone</th>
+                            <th th:text="#{can.login}">can.login</th>
                             <th th:text="#{update}">update</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="member : ${memberList}">
-                            <td th:text="${member.id}">member.username</td>
+                            <td th:text="${member.memberId}">member.memberId</td>
                             <td th:text="${member.username}">member.username</td>
-                            <td th:text="${member.fullname}">member.username</td>
-                            <td th:text="${member.email}">member.username</td>
-                            <td th:text="${member.phone}">member.username</td>
-                            <td> <a class="w3-button w3-green w3-hover-red" th:href="@{'/user/update/'+${member.id}}">
+                            <td th:text="${member.fullname}">member.fullname</td>
+                            <td th:text="${member.email}">member.email</td>
+                            <td th:text="${member.phone}">member.phone</td>
+                            <td>
+                                <i th:if="${member.canLogin}" class="fa fa-check w3-large"></i>
+                                <i th:unless="${member.canLogin}" class="fa fa-close w3-large"></i>
+                            </td>
+                            <td> <a class="w3-button w3-green w3-hover-red" th:href="@{'/user/get/'+${member.memberId}}">
                                     <i class="fa fa-pencil w3-large"></i></a></td>
                         </tr>
                     </tbody>

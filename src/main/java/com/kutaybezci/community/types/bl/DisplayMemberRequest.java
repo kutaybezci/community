@@ -26,4 +26,5 @@ import lombok.Data;
 public class DisplayMemberRequest {
 
     private String memberId;
+    private String username;
 }

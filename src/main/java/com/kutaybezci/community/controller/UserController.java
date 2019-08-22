@@ -19,14 +19,17 @@ package com.kutaybezci.community.controller;
 import com.kutaybezci.community.bl.MemberService;
 import com.kutaybezci.community.types.bl.CreateMemberRequest;
 import com.kutaybezci.community.types.bl.DisplayMemberRequest;
-import com.kutaybezci.community.types.bl.DisplayMemberResponse;
 import com.kutaybezci.community.types.bl.ListMemberRequest;
 import com.kutaybezci.community.types.bl.ListMemberResponse;
+import com.kutaybezci.community.types.bl.MemberDisplay;
 import com.kutaybezci.community.types.bl.UpdateMemberRequest;
 import com.kutaybezci.community.types.fe.InfoForm;
 import com.kutaybezci.community.types.fe.UserForm;
+import java.security.Principal;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +49,8 @@ public class UserController {
 
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private ConversionService conversionService;
 
     @GetMapping("/create")
     public String getCreate(Model model) {
@@ -53,17 +58,12 @@ public class UserController {
         return "user";
     }
 
-    @GetMapping("/update/{id}")
-    public String getCreate(@PathVariable String id, Model model) {
+    @GetMapping("/get/{id}")
+    public String get(@PathVariable String id, Model model) {
         DisplayMemberRequest request = new DisplayMemberRequest();
         request.setMemberId(id);
-        DisplayMemberResponse response = memberService.doDisplayMember(request);
-        UserForm userForm = new UserForm();
-        userForm.setEmail(response.getEmail());
-        userForm.setFullname(response.getFullname());
-        userForm.setPhone(response.getPhone());
-        userForm.setUsername(response.getUsername());
-        userForm.setPostTo(String.format("update/%s", id));
+        MemberDisplay response = memberService.doDisplayMember(request);
+        UserForm userForm = conversionService.convert(response, UserForm.class);
         model.addAttribute("userForm", userForm);
         return "user";
     }
@@ -121,6 +121,18 @@ public class UserController {
         modelAndView.addObject("infoForm", infoForm);
         modelAndView.setViewName("info");
         return modelAndView;
+    }
+
+    @GetMapping("/me")
+    public String getMe(Model model, Principal principal) {
+        Optional<MemberDisplay> member = memberService.doFindByLogin(principal.getName());
+        if (member.isPresent()) {
+            UserForm userForm = conversionService.convert(member.get(), UserForm.class);
+            model.addAttribute("userForm", userForm);
+            return "user";
+        } else {
+            throw new RuntimeException("auth.not.defined");
+        }
     }
 
 }

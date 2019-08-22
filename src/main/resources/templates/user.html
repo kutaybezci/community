@@ -11,15 +11,16 @@
         <div class="w3-card-4">
             <div class="w3-container w3-blue w3-center">
                 <i class="w3-xxxlarge fa fa-user-circle-o"></i>
-                <h1 class="w3-center w3-show-inline-block" th:text="#{user}">user</h1>
+                <h1 th:if="${userForm.memberId}==null" class="w3-center w3-show-inline-block" th:text="#{user.create}">user.create</h1>
+                <h1 th:if="${userForm.memberId}!=null" class="w3-center w3-show-inline-block" th:text="#{user.update}">user</h1>
             </div>
             <div class="w3-container w3-white">
                 <div class="w3-margin">
-                    <form  th:action="@{'/user/'+${userForm.postTo}}" th:object="${userForm}" method="post">
+                    <form  th:action="@{'/user/'+${userForm.memberId==null?'create':'update/'+userForm.memberId}}" th:object="${userForm}" method="post">
                         <fieldset>
                             <input class="w3-input" type="text" name="username" id="username" 
                                    th:placeholder="#{username}" th:field="*{username}" />
-                            <div class="w3-container w3-white" th:if="*{postTo!='create'}">
+                            <div class="w3-container w3-white" th:if="*{memberId!=null}">
                                 <input class="w3-check" type="checkbox" name="updatePassword" th:checked="*{updatePassword}"/>
                                 <label th:text="#{is.update.password}">is.update.password</label>
                             </div>

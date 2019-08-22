@@ -16,8 +16,8 @@
  */
 package com.kutaybezci.community.types.bl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Data;
 
 /**
@@ -25,7 +25,13 @@ import lombok.Data;
  * @author Kutay Bezci
  */
 @Data
-public class ListMemberResponse {
+public class MemberDisplay {
 
-    List<MemberDisplay> memberList = new ArrayList<>();
+    private String memberId;
+    private String username;
+    private String email;
+    private String fullname;
+    private String phone;
+    private Set<String> roles = new HashSet();
+    private boolean canLogin;
 }

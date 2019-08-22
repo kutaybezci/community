@@ -14,20 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.kutaybezci.community.types.bl;
+package com.kutaybezci.community.converter;
 
-import lombok.Data;
+import com.kutaybezci.community.types.bl.MemberDisplay;
+import com.kutaybezci.community.types.fe.UserForm;
+import org.springframework.core.convert.converter.Converter;
 
 /**
  *
  * @author Kutay Bezci
  */
-@Data
-public class DisplayMemberResponse {
+public class MemberDisplayToUserForm implements Converter<MemberDisplay, UserForm> {
 
-    private String memberId;
-    private String username;
-    private String email;
-    private String fullname;
-    private String phone;
+    @Override
+    public UserForm convert(MemberDisplay s) {
+        UserForm form = new UserForm();
+        form.setMemberId(s.getMemberId());
+        form.setEmail(s.getEmail());
+        form.setFullname(s.getFullname());
+        form.setPhone(s.getPhone());
+        form.setUpdatePassword(false);
+        form.setUsername(s.getUsername());
+        return form;
+    }
+
 }

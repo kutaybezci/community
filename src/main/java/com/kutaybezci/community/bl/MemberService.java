@@ -19,12 +19,11 @@ package com.kutaybezci.community.bl;
 import com.kutaybezci.community.types.bl.CreateMemberRequest;
 import com.kutaybezci.community.types.bl.CreateMemberResponse;
 import com.kutaybezci.community.types.bl.DisplayMemberRequest;
-import com.kutaybezci.community.types.bl.DisplayMemberResponse;
+import com.kutaybezci.community.types.bl.MemberDisplay;
 import com.kutaybezci.community.types.bl.ListMemberRequest;
 import com.kutaybezci.community.types.bl.ListMemberResponse;
 import com.kutaybezci.community.types.bl.UpdateMemberRequest;
 import com.kutaybezci.community.types.bl.UpdateMemberResponse;
-import com.kutaybezci.community.types.model.Member;
 import java.util.Optional;
 
 /**
@@ -33,7 +32,7 @@ import java.util.Optional;
  */
 public interface MemberService {
 
-    public Optional<Member> doFindByLogin(String loginName);
+    public Optional<MemberDisplay> doFindByLogin(String loginName);
 
     public boolean doInitAdmin();
 
@@ -41,7 +40,7 @@ public interface MemberService {
 
     public ListMemberResponse doListMember(ListMemberRequest request);
 
-    public DisplayMemberResponse doDisplayMember(DisplayMemberRequest request);
+    public MemberDisplay doDisplayMember(DisplayMemberRequest request);
 
     public UpdateMemberResponse doUpdateMember(UpdateMemberRequest request);
 }

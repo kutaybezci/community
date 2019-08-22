@@ -25,6 +25,7 @@ import lombok.Data;
 @Data
 public class UserForm {
 
+    private String memberId;
     private String username;
     private String password;
     private String password2;
@@ -32,5 +33,4 @@ public class UserForm {
     private String phone;
     private String email;
     private boolean updatePassword;
-    private String postTo = "create";
 }

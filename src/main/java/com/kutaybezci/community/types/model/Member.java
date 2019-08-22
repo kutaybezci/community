@@ -26,6 +26,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import lombok.Data;
 
@@ -46,6 +47,7 @@ public class Member implements Serializable {
     private String fullname;
     private String email;
     private String phone;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "member", orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_id")
     private Set<Role> memberRoles = new HashSet<>();
 }

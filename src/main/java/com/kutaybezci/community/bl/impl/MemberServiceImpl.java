@@ -21,10 +21,9 @@ import com.kutaybezci.community.dal.MemberRepository;
 import com.kutaybezci.community.types.bl.CreateMemberRequest;
 import com.kutaybezci.community.types.bl.CreateMemberResponse;
 import com.kutaybezci.community.types.bl.DisplayMemberRequest;
-import com.kutaybezci.community.types.bl.DisplayMemberResponse;
 import com.kutaybezci.community.types.bl.ListMemberRequest;
 import com.kutaybezci.community.types.bl.ListMemberResponse;
-import com.kutaybezci.community.types.bl.MemberListItem;
+import com.kutaybezci.community.types.bl.MemberDisplay;
 import com.kutaybezci.community.types.bl.UpdateMemberRequest;
 import com.kutaybezci.community.types.bl.UpdateMemberResponse;
 import com.kutaybezci.community.types.model.Member;
@@ -36,6 +35,7 @@ import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,12 +50,14 @@ public class MemberServiceImpl implements MemberService {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
+    private ConversionService conversionService;
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private static final String EMAIL_AT = "@";
 
     @Override
     @Transactional
-    public Optional<Member> doFindByLogin(String loginName) {
+    public Optional<MemberDisplay> doFindByLogin(String loginName) {
         return findByLogin(loginName);
     }
 
@@ -79,7 +81,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public DisplayMemberResponse doDisplayMember(DisplayMemberRequest request) {
+    public MemberDisplay doDisplayMember(DisplayMemberRequest request) {
         return displayMember(request);
     }
 
@@ -89,24 +91,31 @@ public class MemberServiceImpl implements MemberService {
         return updateMember(request);
     }
 
-    public Optional<Member> findByLogin(String loginName) {
-        /*if (StringUtils.contains(loginName, EMAIL_AT)) {
-            return memberRepository.findByEmail(loginName);
-        } else {*/
-        return memberRepository.findByUsername(loginName);
-        //}
+    public Optional<MemberDisplay> findByLogin(String loginName) {
+        Optional<Member> member = memberRepository.findByUsername(loginName);
+        if (member.isPresent()) {
+            MemberDisplay response = conversionService.convert(member.get(), MemberDisplay.class);
+            return Optional.of(response);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public boolean initAdmin() {
         try {
             if (memberRepository.count() == 0) {
-                final String[] users = new String[]{"ADMIN", "SYSTEM"};
-                for (String user : users) {
+                final String[] users = new String[]{"SYSTEM", "ADMIN", "USER"};
+                for (int i = 0; i < users.length; i++) {
+                    String user = users[i];
                     Member m = new Member();
                     m.setFullname(user);
                     m.setUsername(user);
-                    if (StringUtils.equals(users[0], user)) {
-                        m.setPassword(bCryptPasswordEncoder.encode(users[0]));
+                    m.setMemberRoles(new HashSet());
+                    if (i > 0) {
+                        m.setPassword(bCryptPasswordEncoder.encode(user));
+                        Role role = new Role();
+                        role.setRoleCode(user);
+                        m.getMemberRoles().add(role);
                     }
                     memberRepository.save(m);
                 }
@@ -164,19 +173,14 @@ public class MemberServiceImpl implements MemberService {
         Iterable<Member> members = memberRepository.findAll();
         ListMemberResponse response = new ListMemberResponse();
         response.setMemberList(new ArrayList<>());
-        for (Member m : members) {
-            MemberListItem mi = new MemberListItem();
-            mi.setEmail(m.getEmail());
-            mi.setFullname(m.getFullname());
-            mi.setId(m.getId().toString());
-            mi.setPhone(m.getPhone());
-            mi.setUsername(m.getUsername());
-            response.getMemberList().add(mi);
+        for (Member model : members) {
+            MemberDisplay m = conversionService.convert(model, MemberDisplay.class);
+            response.getMemberList().add(m);
         }
         return response;
     }
 
-    public DisplayMemberResponse displayMember(DisplayMemberRequest request) {
+    public MemberDisplay displayMember(DisplayMemberRequest request) {
         long id = -1;
         try {
             id = Long.valueOf(request.getMemberId());
@@ -188,12 +192,7 @@ public class MemberServiceImpl implements MemberService {
             throw new RuntimeException("member.not.found");
         }
         Member m = member.get();
-        DisplayMemberResponse response = new DisplayMemberResponse();
-        response.setEmail(m.getEmail());
-        response.setFullname(m.getFullname());
-        response.setMemberId(m.getId().toString());
-        response.setPhone(m.getPhone());
-        response.setUsername(m.getUsername());
+        MemberDisplay response = conversionService.convert(m, MemberDisplay.class);
         return response;
     }
 

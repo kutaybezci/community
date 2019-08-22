@@ -16,7 +16,7 @@
  */
 package com.kutaybezci.community.config;
 
-import com.kutaybezci.community.bl.MemberService;
+import com.kutaybezci.community.dal.MemberRepository;
 import com.kutaybezci.community.types.model.Member;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,11 +34,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public class UserDetailsServiceImp implements UserDetailsService {
 
     @Autowired
-    private MemberService memberService;
+    private MemberRepository memberRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Member> member = memberService.doFindByLogin(username);
+        Optional<Member> member = memberRepository.findByUsername(username);
         if (member.isPresent() && !StringUtils.isBlank(member.get().getPassword())) {
             String[] roles = member.get().getMemberRoles().stream().map(y -> y.getRoleCode()).collect(Collectors.toList()).toArray(new String[0]);
             return User.withUsername(member.get().getUsername()).password(member.get().getPassword()).roles(roles).build();
